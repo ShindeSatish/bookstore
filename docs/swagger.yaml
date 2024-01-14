@@ -1,0 +1,172 @@
+definitions:
+  dto.APIResponse:
+    properties:
+      data:
+        type: object
+      error:
+        type: object
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.NewOrderRequest:
+    properties:
+      additional_charges:
+        type: number
+      discount_amount:
+        type: number
+      items:
+        items:
+          $ref: '#/definitions/dto.OrderItemRequest'
+        type: array
+      user_id:
+        type: integer
+    type: object
+  dto.OrderItemRequest:
+    properties:
+      book_id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  dto.RegisterUserRequest:
+    properties:
+      email:
+        example: shindesatishsss@gmail.com
+        type: string
+      first_name:
+        example: Satish
+        type: string
+      last_name:
+        example: Shinde
+        type: string
+      password:
+        example: StrongPassword
+        type: string
+      phone:
+        example: "1234567890"
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    type: object
+info:
+  contact: {}
+paths:
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: Get all books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Get all books
+      tags:
+      - books
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user with email and password
+      parameters:
+      - description: Login User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Login user
+      tags:
+      - users
+  /order:
+    post:
+      consumes:
+      - application/json
+      description: Create a new order for a login user (this API requires a valid Authentication token)
+      parameters:
+      - description: Bearer JWT_Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: New Order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/dto.NewOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Create a new order
+      tags:
+      - orders
+  /orders:
+    get:
+      description: Get orders by user ID (this API requires a valid Authentication token)
+      parameters:
+      - description: Bearer JWT_Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Get orders by user ID
+      tags:
+      - orders
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with email and password
+      parameters:
+      - description: Register User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Register new user
+      tags:
+      - users
+swagger: "2.0"
