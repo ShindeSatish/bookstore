@@ -11,6 +11,9 @@ RUN go mod download
 # Copy the rest of the application's code
 COPY . .
 
+# Copy Swagger docs (assuming docs are in the root directory of your project)
+COPY docs/ /app/docs/
+
 # Build the application
 RUN go build -o main ./main.go
 
